@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>CITROB Shop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="marca">
+        <img src="imagenes/marca/ORIGINAL_ISO.png" alt="CITROB">
+        <h1>CITROB <span>Shop</span></h1>
+    </div>
+
+    <div class="busqueda-contenedor">
+        <input type="text" id="buscador" placeholder="Buscar robots, kits, motores...">
+        <div id="resultados-busqueda" class="resultados-busqueda"></div>
+    </div>
+
+    <button class="boton-carrito" id="abrir-carrito">
+        🛒 Carro <span id="contador-carrito">0</span>
+    </button>
+</header>
+
+<section class="hero">
+    <div class="hero-texto">
+        <h1>Robótica Educativa para Colegios e Instituciones</h1>
+
+        <p>
+            Kits oficiales MakeX, robots educativos, componentes y
+            soluciones STEM para el aula.
+        </p>
+
+        <a href="#catalogo" class="hero-boton">
+            Ver Catálogo
+        </a>
+    </div>
+
+    <div class="hero-imagen">
+        <img src="imagenes/marca/vistazo_fondo_naranja.png" alt="CITROB">
+    </div>
+</section>
+
+<section class="destacados">
+    <div class="titulo-destacados">
+        <h2>Productos Destacados</h2>
+        <p>Selección recomendada para colegios e instituciones.</p>
+    </div>
+
+    <div id="productos-destacados" class="catalogo destacados-grid"></div>
+</section>
+
+<main class="layout" id="catalogo">
+
+    <aside class="sidebar">
+        <h2>Categorías</h2>
+
+        <button class="categoria activa" data-categoria="todos">
+            <span>📦</span> Todos los Productos
+        </button>
+
+        <button class="categoria" data-categoria="robots">
+            <span>🤖</span> Robots Educacionales
+        </button>
+
+        <button class="categoria" data-categoria="makex">
+            <span>🏆</span> Kits MakeX
+        </button>
+
+        <button class="categoria" data-categoria="arenas">
+            <span>🧩</span> Arenas MakeX
+        </button>
+
+        <button class="categoria" data-categoria="motores">
+            <span>⚙️</span> Motores y Servos
+        </button>
+
+        <button class="categoria" data-categoria="componentes">
+            <span>🔌</span> Componentes
+        </button>
+    </aside>
+
+    <section class="contenido">
+        <div class="titulo-seccion">
+            <h2 id="titulo-categoria">Todos los Productos</h2>
+            <p id="cantidad-productos">0 productos</p>
+        </div>
+
+        <section id="contenedor-productos" class="catalogo"></section>
+    </section>
+
+</main>
+
+<footer class="footer-citrob">
+    <img src="imagenes/marca/gato.png" alt="CatBot CITROB">
+
+    <div>
+        <h3>CITROB SPA</h3>
+        <p>Organizadores Oficiales MakeX Chile</p>
+        <p>Robótica Educativa • STEM • Innovación</p>
+    </div>
+</footer>
+
+<div class="fondo-carrito" id="fondo-carrito"></div>
+
+<section class="panel-carrito" id="panel-carrito">
+    <div class="carrito-header">
+        <h2>Tu carrito</h2>
+        <button id="cerrar-carrito">✕</button>
+    </div>
+
+    <div id="lista-carrito" class="lista-carrito"></div>
+
+    <p id="total-carrito" class="total-carrito">Total: $0</p>
+
+    <div class="datos-cliente">
+        <h3>Datos para cotización</h3>
+
+        <input type="text" id="cliente-nombre" placeholder="Nombre y Apellido *">
+        <input type="text" id="cliente-colegio" placeholder="Colegio o Institución">
+        <input type="text" id="cliente-direccion" placeholder="Dirección">
+        <input type="email" id="cliente-correo" placeholder="Correo electrónico *">
+        <input type="text" id="cliente-telefono" placeholder="Teléfono *">
+    </div>
+
+    <button id="btn-whatsapp" class="btn-whatsapp">
+        Enviar pedido
+    </button>
+</section>
+
+<div class="modal-producto" id="modal-producto">
+    <div class="modal-contenido">
+        <button class="cerrar-modal" id="cerrar-modal">✕</button>
+
+        <div class="modal-grid">
+            <div>
+                <img id="modal-imagen" class="modal-imagen" alt="Producto">
+            </div>
+
+            <div>
+                <p id="modal-categoria" class="modal-categoria"></p>
+                <h2 id="modal-nombre"></h2>
+                <p id="modal-stock" class="modal-stock"></p>
+                <p id="modal-precio" class="modal-precio"></p>
+                <p id="modal-descripcion" class="modal-descripcion"></p>
+
+                <h3>Especificaciones</h3>
+                <ul id="modal-especificaciones"></ul>
+
+                <button id="modal-agregar" class="modal-agregar">
+                    Agregar al carro
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/productos-data.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/carrito.js"></script>
+<script src="js/buscador.js"></script>
+<script src="js/categorias.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>

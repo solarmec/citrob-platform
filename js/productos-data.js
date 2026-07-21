@@ -218,7 +218,7 @@ const productos = [
         precio: 36990,
         stock: true,
         destacado: false,
-        imagen: "imagenes/motores/servoms15.jpg"
+        imagen: "imagenes/motores/servoMS15.jpg"
     },
     {
         nombre: "Servomotor MEDS15",

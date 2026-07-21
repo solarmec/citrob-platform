@@ -657,6 +657,22 @@ body {
     color: var(--naranjo);
 }
 
+.modal-video {
+    display: block;
+    text-align: center;
+    background: #111827;
+    color: white;
+    text-decoration: none;
+    padding: 13px;
+    border-radius: 10px;
+    font-weight: bold;
+    margin: 15px 0 10px;
+}
+
+.modal-video:hover {
+    background: #333;
+}
+
 /* RESPONSIVE */
 
 @media (max-width: 800px) {
@@ -791,20 +807,4 @@ body {
         text-align: center;
         margin: 16px;
     }
-
-.modal-video {
-    display: block;
-    text-align: center;
-    background: #111827;
-    color: white;
-    text-decoration: none;
-    padding: 13px;
-    border-radius: 10px;
-    font-weight: bold;
-    margin: 15px 0 10px;
-}
-
-.modal-video:hover {
-    background: #333;
-}
 }

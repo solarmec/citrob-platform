@@ -341,6 +341,17 @@ body {
     color: #dc2626;
 }
 
+.precio-anterior {
+    font-size: 15px;
+    color: #777;
+    text-decoration: line-through;
+    margin: 0 0 4px;
+}
+
+.precio-anterior + .precio {
+    margin-top: 0;
+}
+
 .precio {
     font-size: 24px;
     font-weight: bold;
@@ -599,6 +610,17 @@ body {
 
 .modal-stock.agotado {
     color: #dc2626;
+}
+
+.modal-precio-anterior {
+    font-size: 17px;
+    color: #777;
+    text-decoration: line-through;
+    margin: 12px 0 4px;
+}
+
+.modal-precio-anterior:not([hidden]) + .modal-precio {
+    margin-top: 0;
 }
 
 .modal-precio {

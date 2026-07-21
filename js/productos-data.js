@@ -11,7 +11,8 @@ const productos = [
             "Recomendado para clases, talleres y proyectos STEM"
         ],
         video: "https://www.youtube.com/watch?v=uxpoP175mOU",
-        precio: 189900,
+        precioAnterior: 189990,
+        precio: 179990,
         stock: true,
         destacado: true,
         imagen: "imagenes/robots/mbot2.jpg"

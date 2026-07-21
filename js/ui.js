@@ -14,6 +14,7 @@ const modalImagen = document.getElementById("modal-imagen");
 const modalCategoria = document.getElementById("modal-categoria");
 const modalNombre = document.getElementById("modal-nombre");
 const modalStock = document.getElementById("modal-stock");
+const modalPrecioAnterior = document.getElementById("modal-precio-anterior");
 const modalPrecio = document.getElementById("modal-precio");
 const modalDescripcion = document.getElementById("modal-descripcion");
 const modalEspecificaciones = document.getElementById("modal-especificaciones");
@@ -22,6 +23,11 @@ const modalAgregar = document.getElementById("modal-agregar");
 function formatearPrecio(precio) {
     if (precio === 0) return "Consultar";
     return "$" + precio.toLocaleString("es-CL");
+}
+
+function tienePrecioAnteriorValido(producto) {
+    return Number.isFinite(producto.precioAnterior) &&
+        producto.precioAnterior > producto.precio;
 }
 
 function tieneImagen(producto) {
@@ -45,6 +51,10 @@ function crearTarjetaProducto(producto) {
             ${producto.stock ? "Disponible" : "Agotado"}
         </p>
 
+        ${tienePrecioAnteriorValido(producto)
+            ? `<p class="precio-anterior">${formatearPrecio(producto.precioAnterior)}</p>`
+            : ""
+        }
         <p class="precio">${formatearPrecio(producto.precio)}</p>
 
         <button class="btn-agregar" ${producto.stock ? "" : "disabled"}>
@@ -157,6 +167,15 @@ function abrirModalProducto(nombreProducto) {
     modalCategoria.textContent = producto.categoria.toUpperCase();
     modalStock.textContent = producto.stock ? "Disponible" : "Agotado";
     modalStock.className = producto.stock ? "modal-stock disponible" : "modal-stock agotado";
+
+    if (tienePrecioAnteriorValido(producto)) {
+        modalPrecioAnterior.textContent = formatearPrecio(producto.precioAnterior);
+        modalPrecioAnterior.hidden = false;
+    } else {
+        modalPrecioAnterior.textContent = "";
+        modalPrecioAnterior.hidden = true;
+    }
+
     modalPrecio.textContent = formatearPrecio(producto.precio);
     modalDescripcion.textContent = producto.detalle || producto.descripcion;
 

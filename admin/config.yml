@@ -1,0 +1,85 @@
+backend:
+  name: github
+  repo: solarmec/citrob-platform
+  branch: panel-admin
+
+media_folder: "imagenes/uploads"
+public_folder: "/imagenes/uploads"
+
+collections:
+  - name: "catalogo"
+    label: "Catálogo"
+    files:
+      - name: "productos"
+        label: "Productos"
+        file: "data/productos.json"
+        format: "json"
+        fields:
+          - label: "Productos"
+            name: "productos"
+            widget: "list"
+            summary: "{{fields.nombre}}"
+            fields:
+              - label: "ID"
+                name: "id"
+                widget: "string"
+                required: true
+                hint: "Identificador único. No modificar después de crear el producto."
+              - label: "Nombre"
+                name: "nombre"
+                widget: "string"
+                required: true
+              - label: "Categoría"
+                name: "categoria"
+                widget: "select"
+                required: true
+                options:
+                  - label: "Robots educacionales"
+                    value: "robots"
+                  - label: "Kits MakeX"
+                    value: "makex"
+                  - label: "Arenas MakeX"
+                    value: "arenas"
+                  - label: "Motores y servos"
+                    value: "motores"
+                  - label: "Componentes"
+                    value: "componentes"
+              - label: "Descripción"
+                name: "descripcion"
+                widget: "string"
+              - label: "Detalle"
+                name: "detalle"
+                widget: "text"
+              - label: "Especificaciones"
+                name: "especificaciones"
+                widget: "list"
+                field:
+                  label: "Especificación"
+                  name: "especificacion"
+                  widget: "string"
+              - label: "Video"
+                name: "video"
+                widget: "string"
+                required: false
+              - label: "Precio anterior"
+                name: "precioAnterior"
+                widget: "number"
+                value_type: "int"
+                min: 0
+                required: false
+              - label: "Precio"
+                name: "precio"
+                widget: "number"
+                value_type: "int"
+                min: 0
+                required: true
+              - label: "Disponible"
+                name: "stock"
+                widget: "boolean"
+              - label: "Destacado"
+                name: "destacado"
+                widget: "boolean"
+              - label: "Imagen"
+                name: "imagen"
+                widget: "image"
+                required: true

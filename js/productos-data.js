@@ -1,4 +1,4 @@
-const productos = [
+const productosRespaldo = [
     {
         nombre: "mBot2",
         categoria: "robots",
@@ -307,3 +307,5 @@ const productos = [
         imagen: "imagenes/componentes/ruedasmecanum60.jpg"
     }
 ];
+
+let productos = productosRespaldo;

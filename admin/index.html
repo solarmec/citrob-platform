@@ -2,11 +2,187 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex">
-    <title>Administración CITROB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="color-scheme" content="light">
+    <title>Panel de Administración CITROB</title>
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <div id="cargando-inicial" class="pantalla-carga" role="status">
+        <span class="spinner" aria-hidden="true"></span>
+        <p>Comprobando sesión…</p>
+    </div>
+
+    <main id="login-vista" class="login-vista" hidden>
+        <section class="login-tarjeta" aria-labelledby="login-titulo">
+            <img src="../imagenes/marca/ORIGINAL_ISO.png" alt="CITROB" class="login-logo">
+            <p class="eyebrow">CITROB</p>
+            <h1 id="login-titulo">Panel de Administración</h1>
+            <p class="texto-secundario">Ingresa con la contraseña administrativa.</p>
+            <form id="login-form">
+                <label for="login-password">Contraseña</label>
+                <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+                <p id="login-error" class="mensaje-formulario error" role="alert" hidden></p>
+                <button id="login-boton" class="boton primario ancho" type="submit">Ingresar</button>
+            </form>
+        </section>
+    </main>
+
+    <div id="panel-vista" class="panel-vista" hidden>
+        <header class="barra-superior">
+            <div class="marca-panel">
+                <img src="../imagenes/marca/ORIGINAL_ISO.png" alt="" class="marca-logo">
+                <div>
+                    <p class="eyebrow">CITROB</p>
+                    <h1>Panel de Administración</h1>
+                </div>
+            </div>
+            <button id="cerrar-sesion" class="boton secundario" type="button">Cerrar sesión</button>
+        </header>
+
+        <main class="contenido-panel">
+            <section class="resumen-panel" aria-labelledby="catalogo-titulo">
+                <div>
+                    <p class="eyebrow">Catálogo</p>
+                    <h2 id="catalogo-titulo">Productos</h2>
+                    <p id="estado-cambios" class="estado-cambios guardado">Sin cambios pendientes</p>
+                </div>
+                <div class="acciones-principales">
+                    <button id="recargar-productos" class="boton secundario" type="button">Recargar desde GitHub</button>
+                    <button id="nuevo-producto" class="boton secundario acento" type="button">+ Nuevo producto</button>
+                    <button id="guardar-productos" class="boton primario" type="button" disabled>Guardar cambios</button>
+                </div>
+            </section>
+
+            <section class="filtros" aria-label="Buscar y filtrar productos">
+                <label class="campo-busqueda">
+                    <span>Buscar</span>
+                    <input id="buscar-producto" type="search" placeholder="Nombre, ID o descripción">
+                </label>
+                <label>
+                    <span>Categoría</span>
+                    <select id="filtrar-categoria">
+                        <option value="">Todas las categorías</option>
+                        <option value="robots">Robots</option>
+                        <option value="makex">MakeX</option>
+                        <option value="arenas">Arenas</option>
+                        <option value="motores">Motores</option>
+                        <option value="componentes">Componentes</option>
+                    </select>
+                </label>
+                <p id="contador-productos" class="contador-productos">0 productos</p>
+            </section>
+
+            <div id="mensaje-panel" class="aviso" role="status" hidden></div>
+            <section id="lista-productos" class="lista-productos" aria-live="polite"></section>
+            <div id="sin-resultados" class="sin-resultados" hidden>
+                <h3>No encontramos productos</h3>
+                <p>Prueba con otra búsqueda o categoría.</p>
+            </div>
+        </main>
+    </div>
+
+    <div id="modal-producto" class="modal-fondo" role="dialog" aria-modal="true" aria-labelledby="formulario-titulo" hidden>
+        <section class="modal-tarjeta modal-producto">
+            <header class="modal-encabezado">
+                <div>
+                    <p class="eyebrow">Catálogo</p>
+                    <h2 id="formulario-titulo">Nuevo producto</h2>
+                </div>
+                <button id="cerrar-formulario" class="boton-icono" type="button" aria-label="Cerrar formulario">×</button>
+            </header>
+
+            <form id="producto-form">
+                <div class="formulario-grid">
+                    <label>
+                        <span>ID único *</span>
+                        <input id="producto-id" name="id" required maxlength="80" pattern="[a-z0-9]+(?:-[a-z0-9]+)*">
+                        <small>Minúsculas, números y guiones. No conviene cambiarlo después.</small>
+                    </label>
+                    <label>
+                        <span>Nombre *</span>
+                        <input id="producto-nombre" name="nombre" required maxlength="160">
+                    </label>
+                    <label>
+                        <span>Categoría *</span>
+                        <select id="producto-categoria" name="categoria" required>
+                            <option value="robots">Robots</option>
+                            <option value="makex">MakeX</option>
+                            <option value="arenas">Arenas</option>
+                            <option value="motores">Motores</option>
+                            <option value="componentes">Componentes</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Precio actual *</span>
+                        <input id="producto-precio" name="precio" type="number" min="0" max="999999999" step="1" required>
+                    </label>
+                    <label>
+                        <span>Precio anterior</span>
+                        <input id="producto-precio-anterior" name="precioAnterior" type="number" min="0" max="999999999" step="1" placeholder="Opcional">
+                    </label>
+                    <div class="checks">
+                        <label><input id="producto-stock" name="stock" type="checkbox"> Disponible</label>
+                        <label><input id="producto-destacado" name="destacado" type="checkbox"> Destacado</label>
+                        <label><input id="producto-activo" name="activo" type="checkbox"> Visible en la tienda</label>
+                    </div>
+                    <label class="columna-completa">
+                        <span>Descripción breve *</span>
+                        <textarea id="producto-descripcion" name="descripcion" rows="3" maxlength="500" required></textarea>
+                    </label>
+                    <label class="columna-completa">
+                        <span>Detalle *</span>
+                        <textarea id="producto-detalle" name="detalle" rows="5" maxlength="5000" required></textarea>
+                    </label>
+                    <label class="columna-completa">
+                        <span>Especificaciones *</span>
+                        <textarea id="producto-especificaciones" name="especificaciones" rows="6" required></textarea>
+                        <small>Escribe una especificación por línea.</small>
+                    </label>
+                    <label class="columna-completa">
+                        <span>Video HTTPS</span>
+                        <input id="producto-video" name="video" type="url" maxlength="500" placeholder="https://…">
+                    </label>
+                    <div class="imagen-editor columna-completa">
+                        <label>
+                            <span>Ruta de imagen *</span>
+                            <input id="producto-imagen" name="imagen" required maxlength="500" placeholder="imagenes/…">
+                        </label>
+                        <div class="imagen-subida">
+                            <img id="imagen-preview" alt="Vista previa de la imagen" hidden>
+                            <div>
+                                <label for="archivo-imagen" class="boton secundario selector-archivo">Seleccionar imagen</label>
+                                <input id="archivo-imagen" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+                                <p id="archivo-nombre" class="texto-secundario">JPG, PNG o WEBP. Máximo 3 MB.</p>
+                                <button id="subir-imagen" class="boton secundario" type="button" disabled>Confirmar y subir imagen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="errores-producto" class="mensaje-formulario error" role="alert" hidden></div>
+                <footer class="modal-acciones">
+                    <button id="cancelar-formulario" class="boton secundario" type="button">Cancelar</button>
+                    <button class="boton primario" type="submit">Aplicar al catálogo</button>
+                </footer>
+            </form>
+        </section>
+    </div>
+
+    <div id="modal-confirmacion" class="modal-fondo" role="dialog" aria-modal="true" aria-labelledby="confirmacion-titulo" hidden>
+        <section class="modal-tarjeta modal-confirmacion">
+            <h2 id="confirmacion-titulo">Confirmar acción</h2>
+            <p id="confirmacion-texto"></p>
+            <div class="modal-acciones">
+                <button id="confirmacion-cancelar" class="boton secundario" type="button">Cancelar</button>
+                <button id="confirmacion-aceptar" class="boton peligro" type="button">Confirmar</button>
+            </div>
+        </section>
+    </div>
+
+    <div id="toast-contenedor" class="toast-contenedor" aria-live="polite"></div>
+
+    <script src="admin-core.js"></script>
+    <script src="admin.js"></script>
 </body>
 </html>

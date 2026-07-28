@@ -12,8 +12,11 @@ function mostrarResultadosBusqueda() {
     }
 
     const resultados = productos.filter(producto =>
-        producto.nombre.toLowerCase().includes(texto) ||
-        producto.descripcion.toLowerCase().includes(texto)
+        producto.activo !== false &&
+        (
+            producto.nombre.toLowerCase().includes(texto) ||
+            producto.descripcion.toLowerCase().includes(texto)
+        )
     );
 
     if (resultados.length === 0) {
@@ -29,10 +32,12 @@ function mostrarResultadosBusqueda() {
     resultados.slice(0, 6).forEach(producto => {
         const item = document.createElement("div");
         item.className = "resultado-item";
+        const nombre = escaparHTML(producto.nombre);
+        const descripcion = escaparHTML(producto.descripcion);
 
         item.innerHTML = `
-            <h4>${producto.nombre}</h4>
-            <p>${producto.descripcion}</p>
+            <h4>${nombre}</h4>
+            <p>${descripcion}</p>
             <strong>${formatearPrecio(producto.precio)}</strong>
         `;
 

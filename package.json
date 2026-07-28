@@ -1,0 +1,17 @@
+{
+  "name": "citrob-platform",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Tienda estática y panel de administración de CITROB",
+  "scripts": {
+    "build": "npm run verify && npm test && node scripts/preparar-publicacion.js",
+    "password:hash": "node scripts/generar-password-hash.js",
+    "test": "node --test tests/admin-core.test.js tests/functions.test.js tests/utilidades.test.js",
+    "check": "node scripts/verificar-proyecto.js",
+    "verify": "node scripts/verificar-proyecto.js",
+    "preview:test": "node tests/manual-preview-server.js"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}

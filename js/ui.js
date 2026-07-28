@@ -31,21 +31,24 @@ function tienePrecioAnteriorValido(producto) {
 }
 
 function tieneImagen(producto) {
-    return producto.imagen && producto.imagen.trim() !== "";
+    return typeof producto.imagen === "string" && producto.imagen.trim() !== "";
 }
 
 function crearTarjetaProducto(producto) {
     const tarjeta = document.createElement("div");
     tarjeta.className = "producto";
+    const imagen = escaparHTML(producto.imagen);
+    const nombre = escaparHTML(producto.nombre);
+    const descripcion = escaparHTML(producto.descripcion);
 
     tarjeta.innerHTML = `
         ${tieneImagen(producto)
-            ? `<img src="${producto.imagen}" alt="${producto.nombre}" class="imagen-producto">`
+            ? `<img src="${imagen}" alt="${nombre}" class="imagen-producto">`
             : `<div class="imagen-placeholder">Producto</div>`
         }
 
-        <h3>${producto.nombre}</h3>
-        <p class="descripcion">${producto.descripcion}</p>
+        <h3>${nombre}</h3>
+        <p class="descripcion">${descripcion}</p>
 
         <p class="stock ${producto.stock ? "disponible" : "agotado"}">
             ${producto.stock ? "Disponible" : "Agotado"}
@@ -79,6 +82,7 @@ function mostrarProductos() {
     const textoBusqueda = buscador.value.toLowerCase();
 
     const productosFiltrados = productos.filter(producto => {
+        const estaActivo = producto.activo !== false;
         const coincideCategoria =
             categoriaActual === "todos" || producto.categoria === categoriaActual;
 
@@ -86,7 +90,7 @@ function mostrarProductos() {
             producto.nombre.toLowerCase().includes(textoBusqueda) ||
             producto.descripcion.toLowerCase().includes(textoBusqueda);
 
-        return coincideCategoria && coincideBusqueda;
+        return estaActivo && coincideCategoria && coincideBusqueda;
     });
 
     cantidadProductos.textContent = productosFiltrados.length + " productos";
@@ -99,7 +103,9 @@ function mostrarProductos() {
 function mostrarDestacados() {
     productosDestacados.innerHTML = "";
 
-    const destacados = productos.filter(producto => producto.destacado === true);
+    const destacados = productos.filter(producto =>
+        producto.activo !== false && producto.destacado === true
+    );
 
     destacados.forEach(producto => {
         productosDestacados.appendChild(crearTarjetaProducto(producto));
@@ -118,15 +124,17 @@ function actualizarCarrito() {
 
         const item = document.createElement("div");
         item.className = "item-carrito";
+        const imagen = escaparHTML(producto.imagen);
+        const nombre = escaparHTML(producto.nombre);
 
         item.innerHTML = `
             ${tieneImagen(producto)
-                ? `<img src="${producto.imagen}" alt="${producto.nombre}" class="mini-imagen-producto">`
+                ? `<img src="${imagen}" alt="${nombre}" class="mini-imagen-producto">`
                 : `<div class="mini-imagen">IMG</div>`
             }
 
             <div class="detalle-carrito">
-                <h3>${producto.nombre}</h3>
+                <h3>${nombre}</h3>
                 <p>${formatearPrecio(producto.precio * producto.cantidad)}</p>
 
                 <div class="controles-carrito">
@@ -160,7 +168,9 @@ function cerrarPanelCarrito() {
 }
 
 function abrirModalProducto(nombreProducto) {
-    const producto = productos.find(p => p.nombre === nombreProducto);
+    const producto = productos.find(p =>
+        p.nombre === nombreProducto && p.activo !== false
+    );
     if (!producto) return;
 
     modalNombre.textContent = producto.nombre;

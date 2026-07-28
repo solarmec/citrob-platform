@@ -1,10 +1,12 @@
 let carrito = [];
 
 function agregarAlCarrito(nombreProducto) {
-    const producto = productos.find(p => p.nombre === nombreProducto);
+    const producto = productos.find(p =>
+        p.nombre === nombreProducto && p.activo !== false
+    );
     const productoEnCarrito = carrito.find(p => p.nombre === nombreProducto);
 
-    if (!producto) return;
+    if (!producto || !producto.stock) return;
 
     if (productoEnCarrito) {
         productoEnCarrito.cantidad++;
@@ -69,27 +71,27 @@ function enviarPedido() {
         return;
     }
 
-    let mensaje = "Hola CITROB, quisiera cotizar:%0A%0A";
+    let mensaje = "Hola CITROB, quisiera cotizar:\n\n";
 
-    mensaje += `Nombre: ${nombreCliente}%0A`;
-    mensaje += `Colegio/Institución: ${colegioCliente}%0A`;
-    mensaje += `Dirección: ${direccionCliente}%0A`;
-    mensaje += `Correo: ${correoCliente}%0A`;
-    mensaje += `Teléfono: ${telefonoCliente}%0A%0A`;
-    mensaje += `Productos:%0A`;
+    mensaje += `Nombre: ${nombreCliente}\n`;
+    mensaje += `Colegio/Institución: ${colegioCliente}\n`;
+    mensaje += `Dirección: ${direccionCliente}\n`;
+    mensaje += `Correo: ${correoCliente}\n`;
+    mensaje += `Teléfono: ${telefonoCliente}\n\n`;
+    mensaje += "Productos:\n";
 
     carrito.forEach(producto => {
-        mensaje += `- ${producto.nombre} x ${producto.cantidad}: ${formatearPrecio(producto.precio * producto.cantidad)}%0A`;
+        mensaje += `- ${producto.nombre} x ${producto.cantidad}: ${formatearPrecio(producto.precio * producto.cantidad)}\n`;
     });
 
     const total = carrito.reduce((suma, producto) => {
         return suma + producto.precio * producto.cantidad;
     }, 0);
 
-    mensaje += `%0ATotal referencial: ${formatearPrecio(total)}`;
+    mensaje += `\nTotal referencial: ${formatearPrecio(total)}`;
 
     const telefono = "56981533101";
-    const url = `https://wa.me/${telefono}?text=${mensaje}`;
+    const url = construirUrlWhatsapp(telefono, mensaje);
 
     window.open(url, "_blank");
 }

@@ -3,7 +3,11 @@ const cerrarCarrito = document.getElementById("cerrar-carrito");
 const btnWhatsapp = document.getElementById("btn-whatsapp");
 
 async function iniciarPagina() {
-    await Promise.resolve();
+    const productosCargados = await cargarProductos();
+
+    if (productosCargados !== null) {
+        productos = productosCargados;
+    }
 
     mostrarDestacados();
     mostrarProductos();

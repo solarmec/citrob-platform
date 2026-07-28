@@ -2,7 +2,9 @@ const abrirCarrito = document.getElementById("abrir-carrito");
 const cerrarCarrito = document.getElementById("cerrar-carrito");
 const btnWhatsapp = document.getElementById("btn-whatsapp");
 
-function iniciarPagina() {
+async function iniciarPagina() {
+    await Promise.resolve();
+
     mostrarDestacados();
     mostrarProductos();
     actualizarCarrito();

@@ -309,3 +309,24 @@ const productosRespaldo = [
 ];
 
 let productos = productosRespaldo;
+
+async function cargarProductos() {
+    try {
+        const response = await fetch("data/productos.json");
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const datos = await response.json();
+
+        if (!datos || !Array.isArray(datos.productos)) {
+            throw new Error("El archivo JSON no contiene un arreglo de productos válido.");
+        }
+
+        return datos.productos;
+    } catch (error) {
+        console.error("No se pudieron cargar los productos desde el JSON.", error);
+        return null;
+    }
+}

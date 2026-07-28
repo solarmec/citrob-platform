@@ -2,7 +2,7 @@
   "productos": [
     {
       "id": "mbot2",
-      "nombre": "mBot2",
+      "nombre": "mBot2 PRUEBA JSON",
       "categoria": "robots",
       "descripcion": "Robot educativo programable ideal para colegios.",
       "detalle": "Robot educativo avanzado para trabajar programación, sensores, movimiento y proyectos STEM en aula.",

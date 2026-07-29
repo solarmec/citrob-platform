@@ -192,10 +192,14 @@ test("image-upload rechaza archivos no permitidos y exige sesión", async () => 
     }, { cookie }));
     assert.equal(invalida.statusCode, 400);
 
-    global.fetch = async () => new Response(JSON.stringify({
-        content: { sha: "sha-imagen" },
-        commit: { sha: "commit-imagen-simulado" }
-    }), { status: 201, headers: { "Content-Type": "application/json" } });
+    let solicitudImagen;
+    global.fetch = async (url, options = {}) => {
+        solicitudImagen = { url: String(url), options };
+        return new Response(JSON.stringify({
+            content: { sha: "sha-imagen" },
+            commit: { sha: "commit-imagen-simulado" }
+        }), { status: 201, headers: { "Content-Type": "application/json" } });
+    };
 
     const pngMinimo = Buffer.from("89504e470d0a1a0a", "hex").toString("base64");
     const valida = await imageUpload(evento("POST", {
@@ -204,7 +208,17 @@ test("image-upload rechaza archivos no permitidos y exige sesión", async () => 
         data: pngMinimo
     }, { cookie }));
     assert.equal(valida.statusCode, 201);
-    assert.match(JSON.parse(valida.body).path, /^imagenes\/uploads\/imagen-de-prueba-/);
+    const respuestaImagen = JSON.parse(valida.body);
+    assert.equal(respuestaImagen.message, "Imagen subida correctamente.");
+    assert.match(respuestaImagen.path, /^imagenes\/uploads\/imagen-de-prueba-/);
+    assert.match(
+        solicitudImagen.url,
+        /\/repos\/solarmec\/citrob-platform\/contents\/imagenes\/uploads\//
+    );
+    assert.equal(solicitudImagen.options.method, "PUT");
+    const cuerpoGitHub = JSON.parse(solicitudImagen.options.body);
+    assert.equal(cuerpoGitHub.branch, "panel-admin");
+    assert.equal(cuerpoGitHub.content, pngMinimo);
 });
 
 test("los errores de GitHub se convierten en un mensaje seguro", async () => {

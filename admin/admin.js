@@ -14,7 +14,6 @@
         idEditado: null,
         productoBase: null,
         formularioInicial: "",
-        archivoImagen: null,
         idAutomatico: false
     };
 
@@ -60,18 +59,25 @@
         let respuesta;
         try {
             respuesta = await fetch(`${API_BASE}/${ruta}`, {
-                credentials: "same-origin",
+                ...opciones,
                 headers: opciones.body
                     ? { "Content-Type": "application/json", ...(opciones.headers || {}) }
                     : opciones.headers,
-                ...opciones
+                credentials: "same-origin"
             });
         } catch {
             throw new Error("No fue posible conectar con el servidor. Revisa tu conexión.");
         }
 
         const tipo = respuesta.headers.get("content-type") || "";
-        const datos = tipo.includes("application/json") ? await respuesta.json() : {};
+        let datos = {};
+        if (tipo.includes("application/json")) {
+            try {
+                datos = await respuesta.json();
+            } catch {
+                throw new Error("El servidor devolvió una respuesta JSON inválida.");
+            }
+        }
 
         if (respuesta.status === 401 && ruta !== "admin-login") {
             mostrarLogin("La sesión expiró. Vuelve a ingresar.");
@@ -86,6 +92,16 @@
         return datos;
     }
 
+    const subidaImagen = Core.crearControladorSubidaImagen({
+        tiposPermitidos: ALLOWED_IMAGE_TYPES,
+        tamanoMaximo: MAX_IMAGE_SIZE,
+        convertirBase64: archivoABase64,
+        enviar: payload => api("image-upload", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        })
+    });
+
     function establecerOperacion(activa) {
         state.operacionActiva = activa;
         elementos.loginBoton.disabled = activa;
@@ -93,7 +109,8 @@
         elementos.nuevoProducto.disabled = activa;
         elementos.recargar.disabled = activa;
         elementos.guardar.disabled = activa || !state.cambiosPendientes;
-        elementos.subirImagen.disabled = activa || !state.archivoImagen;
+        elementos.archivoImagen.disabled = activa;
+        elementos.subirImagen.disabled = activa || !subidaImagen.tieneArchivo();
     }
 
     function mostrarLogin(mensaje = "") {
@@ -375,7 +392,7 @@
         const inicial = producto ? Core.copiar(producto) : Core.productoNuevo();
         state.idEditado = producto ? producto.id : null;
         state.productoBase = producto ? Core.copiar(producto) : null;
-        state.archivoImagen = null;
+        subidaImagen.limpiar();
         state.idAutomatico = !producto;
         elementos.archivoImagen.value = "";
         elementos.archivoNombre.textContent = "JPG, PNG o WEBP. Máximo 3 MB.";
@@ -394,7 +411,7 @@
             toast("Espera a que termine la operación actual.", "error");
             return;
         }
-        if (serializarFormulario() !== state.formularioInicial || state.archivoImagen) {
+        if (serializarFormulario() !== state.formularioInicial || subidaImagen.tieneArchivo()) {
             const cerrar = await confirmar(
                 "Descartar cambios del formulario",
                 "Los cambios que todavía no aplicaste al catálogo se perderán.",
@@ -410,7 +427,7 @@
         elementos.productoForm.reset();
         state.productoBase = null;
         state.idEditado = null;
-        state.archivoImagen = null;
+        subidaImagen.limpiar();
         document.body.style.overflow = "";
     }
 
@@ -516,20 +533,15 @@
 
     function seleccionarImagen(evento) {
         const archivo = evento.target.files && evento.target.files[0];
-        state.archivoImagen = null;
         elementos.subirImagen.disabled = true;
-        if (!archivo) return;
-        if (!ALLOWED_IMAGE_TYPES.includes(archivo.type)) {
-            toast("Selecciona una imagen JPG, PNG o WEBP.", "error");
+        const seleccion = subidaImagen.seleccionar(archivo);
+
+        if (!seleccion.aceptada) {
+            if (seleccion.error) toast(seleccion.error, "error");
             elementos.archivoImagen.value = "";
             return;
         }
-        if (archivo.size > MAX_IMAGE_SIZE) {
-            toast("La imagen supera el límite de 3 MB.", "error");
-            elementos.archivoImagen.value = "";
-            return;
-        }
-        state.archivoImagen = archivo;
+
         elementos.archivoNombre.textContent = `${archivo.name} · ${(archivo.size / 1024).toFixed(0)} KB`;
         elementos.subirImagen.disabled = state.operacionActiva;
         const lector = new FileReader();
@@ -553,25 +565,22 @@
     }
 
     async function subirImagen() {
-        if (!state.archivoImagen) return;
+        if (state.operacionActiva || subidaImagen.estaProcesando() || !subidaImagen.tieneArchivo()) {
+            return;
+        }
+
         establecerOperacion(true);
         elementos.subirImagen.textContent = "Subiendo…";
         try {
-            const base64 = await archivoABase64(state.archivoImagen);
-            const resultado = await api("image-upload", {
-                method: "POST",
-                body: JSON.stringify({
-                    name: state.archivoImagen.name,
-                    type: state.archivoImagen.type,
-                    data: base64
-                })
-            });
-            $("producto-imagen").value = resultado.path;
-            actualizarPreview(resultado.path);
-            state.archivoImagen = null;
+            const resultado = await subidaImagen.subir();
+            if (!resultado.iniciada) return;
+
+            Core.asignarRutaImagen($("producto-imagen"), resultado.ruta);
+            elementos.imagenPreview.src = resultado.previewUrl;
+            elementos.imagenPreview.hidden = false;
             elementos.archivoImagen.value = "";
             elementos.archivoNombre.textContent = "Imagen subida. La ruta se aplicará al guardar el producto.";
-            toast("Imagen subida correctamente a GitHub.", "exito");
+            toast(resultado.mensaje, "exito");
         } catch (error) {
             toast(error.message, "error");
         } finally {
@@ -635,7 +644,7 @@
         const formularioModificado = formularioAbierto &&
             (
                 serializarFormulario() !== state.formularioInicial ||
-                Boolean(state.archivoImagen)
+                subidaImagen.tieneArchivo()
             );
         if (!state.cambiosPendientes && !formularioModificado) return;
         evento.preventDefault();

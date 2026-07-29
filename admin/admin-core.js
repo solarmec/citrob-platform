@@ -153,9 +153,117 @@
         return precio === 0 ? "Consultar" : `$${Number(precio).toLocaleString("es-CL")}`;
     }
 
+    function crearControladorSubidaImagen({
+        tiposPermitidos,
+        tamanoMaximo,
+        convertirBase64,
+        enviar
+    }) {
+        let archivo = null;
+        let procesando = false;
+
+        function seleccionar(candidato) {
+            if (procesando) {
+                return {
+                    aceptada: false,
+                    error: "Espera a que termine la subida actual."
+                };
+            }
+
+            archivo = null;
+            if (!candidato) return { aceptada: false, error: "" };
+
+            if (!tiposPermitidos.includes(candidato.type)) {
+                return {
+                    aceptada: false,
+                    error: "Selecciona una imagen JPG, PNG o WEBP."
+                };
+            }
+
+            if (!Number.isFinite(candidato.size) || candidato.size > tamanoMaximo) {
+                return {
+                    aceptada: false,
+                    error: "La imagen supera el límite de 3 MB."
+                };
+            }
+
+            archivo = candidato;
+            return { aceptada: true, error: "" };
+        }
+
+        async function subir() {
+            if (!archivo || procesando) return { iniciada: false };
+
+            const archivoActual = archivo;
+            procesando = true;
+
+            try {
+                const data = await convertirBase64(archivoActual);
+                const respuesta = await enviar({
+                    name: archivoActual.name,
+                    type: archivoActual.type,
+                    data
+                });
+                const ruta = respuesta && typeof respuesta.path === "string"
+                    ? respuesta.path.trim()
+                    : "";
+
+                if (!ruta) {
+                    throw new Error("El servidor no devolvió la ruta de la imagen subida.");
+                }
+
+                archivo = null;
+                return {
+                    iniciada: true,
+                    ruta,
+                    mensaje: respuesta.message || "Imagen subida correctamente.",
+                    previewUrl: `data:${archivoActual.type};base64,${data}`
+                };
+            } finally {
+                procesando = false;
+            }
+        }
+
+        function limpiar() {
+            if (!procesando) archivo = null;
+        }
+
+        return {
+            estaProcesando: () => procesando,
+            limpiar,
+            obtenerArchivo: () => archivo,
+            seleccionar,
+            subir,
+            tieneArchivo: () => Boolean(archivo)
+        };
+    }
+
+    function asignarRutaImagen(input, ruta, ConstructorEvento) {
+        const rutaNormalizada = typeof ruta === "string" ? ruta.trim() : "";
+        if (!input || !rutaNormalizada) {
+            throw new Error("No fue posible aplicar la ruta de la imagen al formulario.");
+        }
+
+        input.value = rutaNormalizada;
+        if (typeof input.setCustomValidity === "function") {
+            input.setCustomValidity("");
+        }
+
+        const Evento = ConstructorEvento ||
+            (typeof Event === "function" ? Event : null);
+        if (Evento && typeof input.dispatchEvent === "function") {
+            input.dispatchEvent(new Evento("input", { bubbles: true }));
+            input.dispatchEvent(new Evento("change", { bubbles: true }));
+        }
+
+        return rutaNormalizada;
+    }
+
     return {
         CATEGORIAS,
+        asignarRutaImagen,
         copiar,
+        crearControladorSubidaImagen,
         eliminarLocal,
         filtrarProductos,
         formatearPrecio,

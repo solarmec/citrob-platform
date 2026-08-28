@@ -156,15 +156,42 @@ body {
     line-height: 1.6;
 }
 
+.hero-evento {
+    margin: 14px 0 0;
+    color: #238f84 !important;
+    font-size: 16px !important;
+    font-weight: bold;
+}
+
+.hero-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 20px;
+}
+
 .hero-boton {
     display: inline-block;
-    margin-top: 20px;
     background: var(--naranjo);
     color: white;
     padding: 14px 24px;
     border-radius: 10px;
     text-decoration: none;
     font-weight: bold;
+}
+
+.hero-boton-makex {
+    display: inline-block;
+    padding: 14px 24px;
+    border: 1px solid #2db6a5;
+    border-radius: 10px;
+    color: #238f84;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.hero-boton-makex:hover {
+    background: #eaf8f5;
 }
 
 .hero-imagen img {
@@ -754,6 +781,15 @@ body {
 
     .hero-texto p {
         font-size: 16px;
+    }
+
+    .hero-acciones {
+        gap: 12px;
+    }
+
+    .hero-boton,
+    .hero-boton-makex {
+        text-align: center;
     }
 
     .destacados {

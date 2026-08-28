@@ -11,7 +11,7 @@ const productos = [
             "Recomendado para clases, talleres y proyectos STEM"
         ],
         video: "https://www.youtube.com/watch?v=uxpoP175mOU",
-        precioAnterior: 198990,
+        precioAnterior: 195990,
         precio: 189990,
         stock: true,
         destacado: true,
@@ -29,7 +29,8 @@ const productos = [
             "Ideal para comenzar en robótica educativa"
         ],
         video: "https://www.youtube.com/watch?v=QMYs1cfVTqI",
-        precio: 269990,
+        precioAnterior: 279990,
+        precio: 249990,
         stock: true,
         destacado: true,
         imagen: "imagenes/robots/mtiny.jpg"
@@ -63,6 +64,7 @@ const productos = [
             "Producto orientado a competencias educativas"
         ],
         video: "",
+        precioAnterior: 639990,
         precio: 499990,
         stock: true,
         destacado: true,
@@ -80,6 +82,7 @@ const productos = [
             "Compatible con trabajo en equipo y estrategia de competencia"
         ],
         video: "",
+        precioAnterior: 899990,
         precio: 699990,
         stock: true,
         destacado: false,
@@ -149,7 +152,7 @@ const productos = [
         ],
         video: "",
         precio: 719990,
-        stock: true,
+        stock: false,
         destacado: false,
         imagen: "imagenes/arenamakex/arena_starter2026.png"
     },

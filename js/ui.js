@@ -14,6 +14,7 @@ const modalImagen = document.getElementById("modal-imagen");
 const modalCategoria = document.getElementById("modal-categoria");
 const modalNombre = document.getElementById("modal-nombre");
 const modalStock = document.getElementById("modal-stock");
+const modalOferta = document.getElementById("modal-oferta");
 const modalPrecioAnterior = document.getElementById("modal-precio-anterior");
 const modalPrecio = document.getElementById("modal-precio");
 const modalDescripcion = document.getElementById("modal-descripcion");
@@ -52,7 +53,8 @@ function crearTarjetaProducto(producto) {
         </p>
 
         ${tienePrecioAnteriorValido(producto)
-            ? `<p class="precio-anterior">${formatearPrecio(producto.precioAnterior)}</p>`
+            ? `<span class="etiqueta-oferta">OFERTA</span>
+               <p class="precio-anterior">${formatearPrecio(producto.precioAnterior)}</p>`
             : ""
         }
         <p class="precio">${formatearPrecio(producto.precio)}</p>
@@ -169,9 +171,11 @@ function abrirModalProducto(nombreProducto) {
     modalStock.className = producto.stock ? "modal-stock disponible" : "modal-stock agotado";
 
     if (tienePrecioAnteriorValido(producto)) {
+        modalOferta.hidden = false;
         modalPrecioAnterior.textContent = formatearPrecio(producto.precioAnterior);
         modalPrecioAnterior.hidden = false;
     } else {
+        modalOferta.hidden = true;
         modalPrecioAnterior.textContent = "";
         modalPrecioAnterior.hidden = true;
     }

@@ -341,11 +341,28 @@ body {
     color: #dc2626;
 }
 
+.etiqueta-oferta {
+    display: inline-block;
+    width: fit-content;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(233, 78, 27, 0.1);
+    color: var(--naranjo);
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+}
+
+.etiqueta-oferta[hidden] {
+    display: none;
+}
+
 .precio-anterior {
     font-size: 15px;
     color: #777;
     text-decoration: line-through;
-    margin: 0 0 4px;
+    margin: 4px 0;
 }
 
 .precio-anterior + .precio {
@@ -612,11 +629,15 @@ body {
     color: #dc2626;
 }
 
+.modal-etiqueta-oferta {
+    margin-top: 12px;
+}
+
 .modal-precio-anterior {
     font-size: 17px;
     color: #777;
     text-decoration: line-through;
-    margin: 12px 0 4px;
+    margin: 4px 0;
 }
 
 .modal-precio-anterior:not([hidden]) + .modal-precio {

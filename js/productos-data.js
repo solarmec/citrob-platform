@@ -308,5 +308,25 @@ const productos = [
         stock: true,
         destacado: false,
         imagen: "imagenes/componentes/ruedasmecanum60.jpg"
+    },
+    {
+        nombre: "Control Bluetooth Programable para mBot2",
+        categoria: "componentes",
+        descripcion: "Control Bluetooth programable para manejar tu robot mBot2 de forma manual.",
+        detalle: "Control inalámbrico programable para mBot2, ideal para conducción manual, actividades de robótica y competencias MakeX.",
+        especificaciones: [
+            "Compatible con mBot2",
+            "Conexión inalámbrica Bluetooth",
+            "Programable mediante bloques",
+            "Programable con Python",
+            "Permite controlar el robot de forma manual",
+            "Ideal para entrenamientos y competencias MakeX"
+        ],
+        video: "",
+        precioAnterior: 75990,
+        precio: 69990,
+        stock: true,
+        destacado: false,
+        imagen: "imagenes/componentes/control_bluetooth_mbot2.jpg"
     }
 ];

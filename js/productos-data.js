@@ -47,7 +47,8 @@ const productos = [
             "Recomendado para colegios y academias de robótica"
         ],
         video: "",
-        precio: 639900,
+        precioAnterior: 719990,
+        precio: 649990,
         stock: true,
         destacado: true,
         imagen: "imagenes/kitmakex/kit_starter2026.png"
@@ -64,8 +65,8 @@ const productos = [
             "Producto orientado a competencias educativas"
         ],
         video: "",
-        precioAnterior: 639990,
-        precio: 499990,
+        precioAnterior: 642990,
+        precio: 519990,
         stock: true,
         destacado: true,
         imagen: "imagenes/kitmakex/kit_starter2025.png"
